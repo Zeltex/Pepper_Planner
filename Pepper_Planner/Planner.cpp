@@ -17,12 +17,12 @@ namespace del {
 			if (is_goal_node(graph.get_node(current_node), goal_formula)) {
 				propogate_solved_node(graph, current_node);
 				if (graph.get_root_node().is_solved()) {
-#ifdef _DEBUG
-					std::ofstream myfile;
-					myfile.open("../Graph.dot");
-					myfile << graph.to_graph({ Agent({0}, "Pepper"), Agent({1}, "L") });
-					myfile.close();
-#endif
+//#ifdef _DEBUG
+//					std::ofstream myfile;
+//					myfile.open("../Graph.dot");
+//					myfile << graph.to_graph({ Agent({0}, "Pepper"), Agent({1}, "L") });
+//					myfile.close();
+//#endif
 
 
 					return extract_policy(graph);
