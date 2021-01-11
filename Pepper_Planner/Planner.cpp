@@ -1,11 +1,24 @@
 #include "Planner.hpp"
 #include "Node_Comparator.hpp"
 #include "Memory.hpp"
+#include <chrono>
+#include <numeric>
 
 namespace del {
 
+	std::chrono::steady_clock::time_point update_timer(std::vector<long>& total_times, size_t index, const std::chrono::steady_clock::time_point& current_time) {
+		auto temp = std::chrono::high_resolution_clock::now();
+		total_times[index] += std::chrono::duration_cast<std::chrono::microseconds>(temp - current_time).count();
+		return temp;
+	}
+
+
 	// TODO - Add option to specify for what person the goal must be fulfilled
 	Policy Planner::find_policy(const Formula& goal_formula, Action_Library& action_library, const State& initial_state, const std::vector<Agent>& agents, const Domain& domain, Agent_Id planning_agent) const {
+
+		std::vector<long> total_times(15);
+		std::chrono::steady_clock::time_point current_time = std::chrono::high_resolution_clock::now();		
+		auto start_time = std::chrono::high_resolution_clock::now();
 		constexpr size_t initial_node_size = 10000;
 		Node_Comparator history;
 		Graph graph(initial_node_size, initial_state, history, planning_agent);
@@ -13,6 +26,10 @@ namespace del {
 		std::vector<size_t> debug_and_layer_size(30);
 
 		// TODO - Need to check if states in initial frontier are solved
+
+		current_time = update_timer(total_times, 7, current_time);
+		long total_action_counter = 0;
+		long applicable_action_counter = 0;
 
 		while (!graph.is_frontier_empty()) {
 #if DEBUG_PRINT == 1 && PRINT_PARTIAL == 0
@@ -28,11 +45,17 @@ namespace del {
 				perspective_shifts.push_back(perform_perspective_shift(current_state, { i }));
 			}
 
+			current_time = update_timer(total_times, 0, current_time);
+
 			while (action_library.has_action()) {
+				total_action_counter++;
 				const Action& action = action_library.get_next_action();
 				if (!is_action_applicable(perspective_shifts.at(action.get_owner().id), action, domain)) {
+					current_time = update_timer(total_times, 1, current_time);
 					continue;
 				}
+				applicable_action_counter++;
+				current_time = update_timer(total_times, 1, current_time);
 				State state_product_update = perform_product_update(perspective_shifts.at(action.get_owner().id), action, agents, domain);
 #if BISIM_CONTRACTION_ENABLED == 1
 				state_product_update = std::move(perform_k_bisimilar_contraction(std::move(state_product_update), BISIMILAR_DEPTH));
@@ -43,9 +66,11 @@ namespace del {
 
 				Node_Id action_node = graph.create_and_node(state_product_update, current_node, action);
 				history.insert(graph.get_node(action_node));
+				current_time = update_timer(total_times, 2, current_time);
 				std::vector<State> global_states = split_into_global_states(state_product_update, action.get_owner());
 				debug_and_layer_size[state_product_update.get_cost() / 100] ++;
 
+				current_time = update_timer(total_times, 3, current_time);
 				for (State& global_state : global_states) {
 #if REMOVE_UNREACHABLE_WORLDS_ENABLED == 1
 					global_state.remove_unreachable_worlds();
@@ -66,16 +91,29 @@ namespace del {
 					}
 					history.insert(graph.get_node(global_agent_node));
 				}
+				current_time = update_timer(total_times, 4, current_time);
 				check_node(graph, action_node, false);
+				current_time = update_timer(total_times, 5, current_time);
 			}
 			check_node(graph, current_node);
 			auto policy = check_root(graph, domain);
+			current_time = update_timer(total_times, 6, current_time);
 			if (policy.has_value()) {
 #if DEBUG_PRINT == 1
 				report_memory_usage();
 				print_debug_layer(debug_or_layer_size, debug_and_layer_size);
 #endif
-				return policy.value();
+				for (size_t i = 0; i < total_times.size(); ++i) {
+					std::cout << "Phase " << i << " took us " << total_times[i] << std::endl;
+				}
+				long phase_times = 0;
+				phase_times = std::accumulate(std::begin(total_times), std::end(total_times), phase_times);
+				std::cout << "Sum of phase times " << (phase_times / 1000000.0) << std::endl;
+				auto end_time = std::chrono::high_resolution_clock::now();
+				auto total_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000000.0;
+				std::cout << "Find policy took total s " << total_time << std::endl;
+				std::cout << applicable_action_counter << "/" << total_action_counter << " = " << ((1.0 * applicable_action_counter) / total_action_counter) << " actions were applicable" << std::endl;
+				return policy.value(); 
 			}
 		}
 #if DEBUG_PRINT == 1
@@ -84,6 +122,9 @@ namespace del {
 #endif
 		PRINT_GRAPH(graph, domain);
 		PRINT_GRAPH_DOT(graph, domain);
+		for (size_t i = 0; i < total_times.size(); ++i) {
+			std::cout << "Phase " << i << " took us " << total_times[i] << std::endl;
+		}
 		return Policy(false);
 	}
 
