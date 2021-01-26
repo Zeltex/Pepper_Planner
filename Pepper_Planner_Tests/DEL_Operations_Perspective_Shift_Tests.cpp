@@ -21,9 +21,7 @@ namespace PepperPlannerTests
 	{
 	public:
 
-		TEST_METHOD(Perspective_Shift_Agent_P) {
-			
-
+		State get_state() {
 			std::unordered_map<std::string, Atom_Id> atom_to_id;
 			atom_to_id["red"] = 0;
 			atom_to_id["Box0"] = 1;
@@ -36,10 +34,10 @@ namespace PepperPlannerTests
 			state.create_world();
 			state.create_world();
 			state.create_world();
-			state.add_true_propositions(World_Id{ 0 }, { {0} });
-			state.add_true_propositions(World_Id{ 1 }, { {1} });
-			state.add_true_propositions(World_Id{ 2 }, { {1} });
-			state.add_true_propositions(World_Id{ 3 }, { {2} });
+			state.add_true_proposition(World_Id{ 0 }, { 0 });
+			state.add_true_proposition(World_Id{ 1 }, { 1 });
+			state.add_true_proposition(World_Id{ 2 }, { 1 });
+			state.add_true_proposition(World_Id{ 3 }, { 2 });
 
 			for (size_t i = 0; i < 4; i++) {
 				state.add_indistinguishability_relation(Agent_Id{ 0 }, World_Id{ i }, World_Id{ i });
@@ -58,8 +56,15 @@ namespace PepperPlannerTests
 
 
 			state.add_designated_world(World_Id{ 1 });
+			return state;
+		}
 
-			Agent agent(Agent_Id{ 0 }, { atom_to_id.size() }, "Pepper");
+		TEST_METHOD(Perspective_Shift_Agent_P) {
+			auto state = get_state();
+
+			
+
+			Agent agent(Agent_Id{ 0 }, { 0 }, "Pepper");
 			auto new_state = perform_perspective_shift(state, agent.get_id());
 
 
@@ -86,10 +91,10 @@ namespace PepperPlannerTests
 			state.create_world();
 			state.create_world();
 			state.create_world();
-			state.add_true_propositions(World_Id{ 0 }, { {0} });
-			state.add_true_propositions(World_Id{ 1 }, { {1} });
-			state.add_true_propositions(World_Id{ 2 }, { {1} });
-			state.add_true_propositions(World_Id{ 3 }, { {2} });
+			state.add_true_proposition(World_Id{ 0 }, {0});
+			state.add_true_proposition(World_Id{ 1 }, {1});
+			state.add_true_proposition(World_Id{ 2 }, {1});
+			state.add_true_proposition(World_Id{ 3 }, {2});
 
 			state.add_indistinguishability_relation(Agent_Id{ 0 }, World_Id{ 1 }, World_Id{ 1 });
 
@@ -114,6 +119,7 @@ namespace PepperPlannerTests
 
 			auto& worlds = new_state.get_worlds();
 			Assert::AreEqual(size_t{ 4 }, worlds.size());
+			auto temp_size = new_state.get_relations().get_size(Agent_Id{ 0 });
 			Assert::AreEqual(size_t{ 10 }, new_state.get_relations().get_size(Agent_Id{ 0 }));
 			Assert::AreEqual(size_t{ 13 }, new_state.get_relations().get_size(Agent_Id{ 1 }));
 

@@ -20,9 +20,8 @@ namespace del {
 		void add_edge_condition(Atom_Id agent, std::vector<Edge_Condition>&& edge_conditions);
 		std::unordered_map<Proposition, Proposition> create_converter(const Domain& domain, const std::unordered_map<size_t, Atom_Id>& arguments) const;
 		std::unordered_map<Proposition, Proposition> create_converter(const Domain& domain, const std::vector<Atom_Id>& arguments) const;
-		void create_event(std::string name, Formula&& preconditions, const std::vector<Proposition>& add_list, const std::vector<Proposition>& delete_list);
+		void create_event(std::string name, Formula&& preconditions, const Propositions& add_list, const Propositions& delete_list);
 		void set_action_input(std::vector<std::pair<std::string, std::string>>&& inputs);
-		void set_amount_of_agents(size_t amount_of_agents);
 		void set_cost(size_t cost);
 		void set_designated_events(std::vector<std::string> designated_events);
 		void set_instance_to_proposition(std::map<Proposition_Instance, Proposition> instance_to_proposition);

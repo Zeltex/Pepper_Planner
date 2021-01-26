@@ -6,12 +6,10 @@ namespace del {
 
 	bool Formula_Input_Impl::valuate_prop(Proposition prop, const size_t world_id) const {
 		auto& propositions_state = state->get_true_propositions(world_id);
-		if (std::find(propositions_state.begin(), propositions_state.end(), prop) != propositions_state.end()) return true;
+		if (propositions_state.valuate(prop)) return true;
 		if (domain != nullptr) {
 			auto& propositions_domain = domain->get_atom_rigids();
-			if (std::find(propositions_domain.begin(), propositions_domain.end(), prop) != propositions_domain.end()) {
-				return true;
-			}
+			if (propositions_domain.valuate(prop)) return true;
 		}
 		return false;
 	}

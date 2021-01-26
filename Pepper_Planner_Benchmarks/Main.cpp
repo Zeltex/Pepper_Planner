@@ -439,8 +439,8 @@ int main(int argc, char* argv[]) {
 	//find_and_execute("MAPF/p7.maepl", "a0");
 	//find_and_execute("Thorsten_Domains/p1.maepl", "a0");
 
-	//run_mapf_benchmark();
-	run_mapf_and_solve();
+	run_mapf_benchmark();
+	//run_mapf_and_solve();
 
 	__debugbreak;
 	return 0;

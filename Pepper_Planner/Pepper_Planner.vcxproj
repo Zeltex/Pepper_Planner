@@ -156,11 +156,9 @@
     <ClCompile Include="DEL_Operations.cpp" />
     <ClCompile Include="Domain.cpp" />
     <ClCompile Include="Domain_Interface_Implementation.cpp" />
-    <ClCompile Include="Environment_Loader.cpp" />
     <ClCompile Include="DEL_Interface.cpp" />
     <ClCompile Include="Formula_Input_Impl.cpp" />
     <ClCompile Include="General_Action.cpp" />
-    <ClCompile Include="General_World.cpp" />
     <ClCompile Include="Indistinguishability_Relations.cpp" />
     <ClCompile Include="Interface_DTO.cpp" />
     <ClCompile Include="Misc.cpp" />
@@ -171,7 +169,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Policy.cpp" />
     <ClCompile Include="Propositions.cpp" />
-    <ClCompile Include="Propositions.hpp" />
+    <ClInclude Include="Propositions.hpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="World.cpp" />
@@ -186,11 +184,9 @@
     <ClInclude Include="DEL_Operations.hpp" />
     <ClInclude Include="Domain.hpp" />
     <ClInclude Include="Domain_Interface_Implementation.hpp" />
-    <ClInclude Include="Environment_Loader.hpp" />
     <ClInclude Include="DEL_Interface.hpp" />
     <ClInclude Include="Formula_Input_Impl.hpp" />
     <ClInclude Include="General_Action.hpp" />
-    <ClInclude Include="General_World.hpp" />
     <ClInclude Include="Indistinguishability_Relations.hpp" />
     <ClInclude Include="Interface_DTO.hpp" />
     <ClInclude Include="Misc.hpp" />

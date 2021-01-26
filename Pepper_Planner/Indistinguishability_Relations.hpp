@@ -90,6 +90,7 @@ namespace del {
 		std::string to_string() const;
 		std::string to_graph() const;
 		void set_amount_of_worlds(size_t amount_of_worlds);
+		void set_amount_of_events(size_t amount_of_events);
 		size_t get_class(World_Id world, Agent_Id agent) const;
 		size_t get_class(Event_Id world, Agent_Id agent) const;
 		void add_relation(Agent_Id agent, World_Id world_from, World_Id world_to);

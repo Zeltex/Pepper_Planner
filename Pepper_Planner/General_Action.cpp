@@ -25,7 +25,7 @@ namespace del {
 		this->inputs = inputs;
 	}
 
-	void General_Action::create_event(std::string name, Formula&& preconditions, const std::vector<Proposition>& add_list, const std::vector<Proposition>& delete_list) {
+	void General_Action::create_event(std::string name, Formula&& preconditions, const Propositions& add_list, const Propositions& delete_list) {
 		Event_Id id = { events.size() };
 		event_to_id.insert({ name, id });
 		events.emplace_back(name, id, std::move(preconditions), add_list, delete_list);
@@ -34,10 +34,6 @@ namespace del {
 	void General_Action::add_edge_condition(Atom_Id agent, std::vector<Edge_Condition>&& edge_conditions_input) {
 		edge_conditions.insert({ agent.id, std::move(edge_conditions_input) });
 	} 
-
-	void General_Action::set_amount_of_agents(size_t amount_of_agents) {
-		//TODO - Might not be needed anymore
-	}
 
 	size_t General_Action::get_cost() const {
 		return cost;

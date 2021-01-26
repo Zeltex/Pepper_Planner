@@ -7,11 +7,11 @@ namespace del {
 		return id;
 	}
 
-	const std::vector<Proposition> Action_Event::get_add_list() const {
+	const Propositions& Action_Event::get_add_list() const {
 		return proposition_add;
 	}
 
-	const std::vector<Proposition> Action_Event::get_delete_list() const {
+	const Propositions& Action_Event::get_delete_list() const {
 		return proposition_delete;
 	}
 
@@ -24,16 +24,14 @@ namespace del {
 	}
 
 	std::string Action_Event::to_string(const Domain& domain) const {
-		std::string result = "Event " + std::to_string(id.id) + ": (Preconditions: " + precondition.to_string(domain.get_id_to_atom()) + ") (Add list";
-		for (auto add : proposition_add) {
-			result += ", " + domain.get_proposition_instance(add).to_string(domain.get_id_to_atom());
-		}
-		result += ") (Delete list, ";
-		for (auto delete_entry : proposition_delete) {
-			result += ", " + domain.get_proposition_instance(delete_entry).to_string(domain.get_id_to_atom());
-		}
-		result += ")";
-		return result;
+		return "Event " 
+			+ std::to_string(id.id) 
+			+ ": (Preconditions: " 
+			+ precondition.to_string(domain.get_id_to_atom()) 
+			+ ") (Add list"
+			+ proposition_add.to_string(domain)
+			+ ") (Delete list, "
+			+ proposition_delete.to_string(domain)
+			+ ")";
 	}
-
 }

@@ -87,9 +87,6 @@
     <ClCompile Include="Interface_DTO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Environment_Loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DEL_Interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="General_Action.cpp">
       <Filter>Source Files\DEL\Action</Filter>
-    </ClCompile>
-    <ClCompile Include="General_World.cpp">
-      <Filter>Source Files\DEL</Filter>
     </ClCompile>
     <ClCompile Include="Types.cpp">
       <Filter>Source Files</Filter>
@@ -113,9 +107,6 @@
     </ClCompile>
     <ClCompile Include="Formula_Input_Impl.cpp">
       <Filter>Source Files\DEL\Formula</Filter>
-    </ClCompile>
-    <ClCompile Include="Propositions.hpp">
-      <Filter>Header Files\DEL\Formula</Filter>
     </ClCompile>
     <ClCompile Include="Propositions.cpp">
       <Filter>Source Files\DEL\Formula</Filter>
@@ -173,17 +164,11 @@
     <ClInclude Include="Interface_DTO.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Environment_Loader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DEL_Interface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="General_Action.hpp">
       <Filter>Header Files\DEL\Action</Filter>
-    </ClInclude>
-    <ClInclude Include="General_World.hpp">
-      <Filter>Header Files\DEL</Filter>
     </ClInclude>
     <ClInclude Include="Core.hpp">
       <Filter>Header Files</Filter>
@@ -199,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="Indistinguishability_Relations.hpp">
       <Filter>Header Files\DEL</Filter>
+    </ClInclude>
+    <ClInclude Include="Propositions.hpp">
+      <Filter>Header Files\DEL\Formula</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

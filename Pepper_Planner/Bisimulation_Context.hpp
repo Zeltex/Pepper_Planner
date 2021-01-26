@@ -51,18 +51,8 @@ namespace del {
 	public:
 		Bisimulation_Context(const State& state1, const State& state2) : state1(state1), state2(state2) {}
 
-		//void create_merged_worlds_list();
-		//void create_merged_relations_list();
-		//void partition_into_valuation_blocks();
-		//void partition_into_relations_blocks();
 		void partition_into_relations_blocks_contraction(const Quick_Relations& relations);
-		//bool are_relations_equal(std::vector<size_t> original_relations1, std::vector<size_t> original_relations2);
-		//void move_worlds_to_new_block(const std::vector<World_Id>& worlds_to_be_moved);
-		//bool is_bisimilar();
-
 		State to_bisimulation_contraction(const State& state, size_t k = 0);
-
-		std::string convert_propositions_to_string(const std::vector<Proposition>& propositions);
 	private:
 		void initialize_blocks(const State& state, std::unordered_map<std::string, size_t>& valuation_to_block);
 		State create_new_state(const State& state, const Quick_Relations& relations);

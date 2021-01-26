@@ -41,34 +41,8 @@ namespace del {
 	}
 
 	State perform_perspective_shift(const State& state, Agent_Id agent_id) {
-
-		auto new_designated = state.get_designated_world_reachables(agent_id);
-
-		//std::vector<World_Id> frontier;
-		//std::unordered_set<size_t> visited;
-		//for (const auto& designated_world : state.get_designated_worlds()) {
-		//	frontier.push_back(designated_world);
-		//}
-		//while (!frontier.empty()) {
-		//	auto current = frontier.back();
-		//	frontier.pop_back();
-		//	for (const auto& relation : state.get_indistinguishability_relations(agent_id)) {
-		//		if (relation.world_from == current &&
-		//			std::find(visited.begin(), visited.end(), relation.world_to.id) == visited.end()) {
-
-		//			frontier.push_back(relation.world_to);
-		//			visited.insert(relation.world_to.id);
-		//		}
-		//	}
-		//}
-		//std::vector<World_Id> designated_worlds;
-		//designated_worlds.reserve(visited.size());
-		//for (auto& entry : visited) {
-		//	designated_worlds.emplace_back(World_Id{ entry });
-		//}
-
 		State result = State(state);
-		result.set_designated_worlds(new_designated);
+		result.set_designated_worlds(state.get_designated_world_reachables(agent_id));
 		return std::move(result);
 	}
 
@@ -104,12 +78,6 @@ namespace del {
 		}
 		return !worlds.empty();
 	}
-
-	//bool are_states_bisimilar(const State& state1, const State& state2) {
-	//	Bisimulation_Context bisimulation_context(state1, state2);
-	//	return bisimulation_context.is_bisimilar();
-	//}
-
 
 	State perform_k_bisimilar_contraction(const State& state, size_t depth) {
 		State temp1;

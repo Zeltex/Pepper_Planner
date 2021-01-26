@@ -60,8 +60,8 @@ namespace PepperPlannerTests
 			state.add_indistinguishability_relation({ 0 }, { 1 }, { 0 });
 			state.add_indistinguishability_relation({ 0 }, { 0 }, { 0 });
 			state.add_indistinguishability_relation({ 0 }, { 1 }, { 1 });
-			state.add_true_propositions({ 0 }, { { 0 } });
-			state.add_true_propositions({ 1 }, { { 1} });
+			state.add_true_proposition({ 0 }, { 0 });
+			state.add_true_proposition({ 1 }, { 1 });
 
 
 			State state2(1);
@@ -71,8 +71,8 @@ namespace PepperPlannerTests
 			state2.add_indistinguishability_relation({ 0 }, { 1 }, { 0 });
 			state2.add_indistinguishability_relation({ 0 }, { 0 }, { 0 });
 			state2.add_indistinguishability_relation({ 0 }, { 1 }, { 1 });
-			state2.add_true_propositions({ 0 }, { { 1 } });
-			state2.add_true_propositions({ 1 }, { { 0 } });
+			state2.add_true_proposition({ 0 }, { 1 });
+			state2.add_true_proposition({ 1 }, { 0 });
 
 			std::cout << state.to_hash() << std::endl;
 			std::cout << state2.to_hash() << std::endl;

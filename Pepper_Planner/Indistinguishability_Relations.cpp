@@ -90,9 +90,6 @@ namespace del {
 
 	void Indistinguishability_Relations::convert(const std::unordered_map<size_t, size_t>& converter, const size_t new_world_size) {
 		std::vector<std::vector<size_t>> new_relations(relations.size(), std::vector<size_t>(new_world_size));
-		//for (size_t i = 0; i < new_relations.size(); ++i) {
-		//	new_relations.at(i).emplace_back(new_world_size);
-		//}
 
 		for (const auto& [from, to] : converter) {
 			for (size_t agent = 0; agent < new_relations.size(); ++agent) {
@@ -193,6 +190,10 @@ namespace del {
 				relations.at(i).emplace_back(index_counter++);
 			}
 		}
+	}
+
+	void Indistinguishability_Relations::set_amount_of_events(size_t amount_of_events) {
+		set_amount_of_worlds(amount_of_events);
 	}
 
 	// Transforming from low memory indistinguishability classes to high speed sets of indistinguishability worlds

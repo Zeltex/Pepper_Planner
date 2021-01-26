@@ -6,6 +6,8 @@
 #include "Misc.hpp"
 #include "Agent.hpp"
 #include "Indistinguishability_Relations.hpp"
+#include "Propositions.hpp"
+
 
 namespace del {
 	class Domain;
@@ -15,7 +17,7 @@ namespace del {
 		State();
 		State(size_t amount_of_agents);
 
-		virtual const std::vector<Proposition>& get_true_propositions(size_t world_id) const;
+		virtual const Propositions& get_true_propositions(size_t world_id) const;
 		virtual std::vector<size_t> get_reachable_worlds(size_t agent_id, size_t world_id) const;
 
 		World&	create_world();
@@ -38,10 +40,11 @@ namespace del {
 		void add_indistinguishability_relation(Agent_Id agent, World_Id world_from, World_Id world_to);
 		void add_observability(Agent_Id observer, const std::vector<Agent_Id>& agents);
 		void add_perceivability(Agent_Id perceiver, const std::vector<Agent_Id>& agents);
-		void add_true_propositions(World_Id world, const std::vector<Proposition>& propositions);
+		void add_true_proposition(World_Id world, const Proposition& propositions);
+		void add_true_propositions(World_Id world, const Propositions& propositions);
 		void remove_observability(Agent_Id observer, const std::vector<Agent_Id>& agents);
 		void remove_perceivability(Agent_Id perceiver, const std::vector<Agent_Id>& agents);
-		void remove_true_propositions(World_Id world, const std::vector<Proposition>& propositions);
+		void remove_true_propositions(World_Id world, const Propositions& propositions);
 		void remove_unreachable_worlds();
 
 

@@ -116,7 +116,7 @@ namespace del {
 		return false;
 	}
 	bool Node::check_if_dead_or(Graph& graph) {
-		for (auto child : children) {
+		for (const auto& child : children) {
 			if (!graph.get_node(child).is_dead()) {
 				return false;
 			}
@@ -147,7 +147,7 @@ namespace del {
 		}
 	}
 	bool Node::check_if_solved_or(Graph& graph) {
-		for (auto child : children) {
+		for (const auto& child : children) {
 			if (graph.get_node(child).is_solved()) {
 				solved = true;
 				return true;
@@ -156,7 +156,7 @@ namespace del {
 		return false;
 	}
 	bool Node::check_if_solved_and(Graph& graph) {
-		for (auto child : children) {
+		for (const auto& child : children) {
 			if (!graph.get_node(child).is_solved()) {
 				return false;
 			}

@@ -1,5 +1,6 @@
 #pragma once
 #include "Formula_Input_Interface.hpp"
+#include "Propositions.hpp"
 
 namespace del {
 	class State;

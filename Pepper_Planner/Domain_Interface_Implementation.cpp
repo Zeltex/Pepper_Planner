@@ -10,11 +10,6 @@ namespace del {
 
 	void Domain_Interface_Implementation::finish_problem() {
 
-		// Action reachability and reflexivity
-		for (auto& action : actions) {
-			action.set_amount_of_agents(domain.get_agents().size());
-		}
-
 		// Perceivability
 		for (auto& perceiver_list : perceivability) {
 			std::vector<Agent_Id> temp;
@@ -143,24 +138,18 @@ namespace del {
 	}
 
 	void Domain_Interface_Implementation::set_initial_propositions(const std::vector<Proposition_Instance>& proposition_instances) {
-		std::vector<Proposition> propositions;
-		propositions.reserve(proposition_instances.size());
+		Propositions propositions;
 		for (auto& proposition_instance : proposition_instances) {
-			propositions.push_back(domain.get_proposition(proposition_instance));
+			propositions.add({ domain.get_proposition(proposition_instance) });
 		}
-		//auto converter = get_loader_to_planner_converter(atom_to_id);
-		//auto propositions = convert_loader_instances_to_planner_propositions(proposition_instances, converter);
 		domain.set_rigid_atoms(propositions);
 	}
 
 	void Domain_Interface_Implementation::create_world(std::string name, const std::vector<Proposition_Instance>& proposition_instances) {
 		auto& world = initial_state.create_world();
-		//auto converter = get_loader_to_planner_converter(atom_to_id);
-		//auto propositions = convert_loader_instances_to_planner_propositions(proposition_instances, converter);
-		std::vector<Proposition> propositions;
-		propositions.reserve(proposition_instances.size());
+		Propositions propositions;
 		for (auto& proposition_instance : proposition_instances) {
-			propositions.push_back(domain.get_proposition(proposition_instance));
+			propositions.add({ domain.get_proposition(proposition_instance) });
 		}
 
 		world.add_true_propositions(propositions);
@@ -211,32 +200,12 @@ namespace del {
 		this->goal = Formula(goal, converter);
 	}
 
-	//void Domain_Interface_Implementation::add_edge_condition(Atom_Id agent, std::vector< std::tuple<std::string, std::string, Formula>>&& edge_conditions) {
-
-	//	std::vector<Edge_Condition> temp;
-	//	temp.reserve(edge_conditions.size());
-	//	for (auto&[event_from, event_to, condition] : edge_conditions) {
-	//		temp.emplace_back(std::move(event_from), std::move(event_to), std::move(condition));
-	//	}
-	//	current_action.add_edge_condition(agent, std::move(temp));
-	//}
-
 	void Domain_Interface_Implementation::add_observability(std::string observer, const std::vector<std::string>& agents) {
 		observability[observer] = agents;
 	}
 	
 	void Domain_Interface_Implementation::add_perceivability(std::string perceiver, const std::vector<std::string>& agents) {
 		perceivability[perceiver] = agents;
-	}
-
-	// Map from domain_loader ids to pepper_planner ids (using size_t and Atom_Id)
-	std::unordered_map<size_t, Atom_Id> Domain_Interface_Implementation::get_loader_to_planner_converter(const std::unordered_map<std::string, Atom_Id>& atom_to_id) const{
-		std::unordered_map<size_t, Atom_Id> converter;
-		converter.reserve(atom_to_id.size());
-		for (const auto& entry : atom_to_id) {
-			converter[entry.second.id] = domain.get_atom_id(entry.first);
-		}
-		return converter;
 	}
 
 	// Map from domain_loader ids to pepper_planner ids (using Proposition)
@@ -247,16 +216,5 @@ namespace del {
 			converter[entry.second] = domain.get_proposition(entry.first);
 		}
 		return converter;
-	}
-
-	std::vector<Proposition> Domain_Interface_Implementation::convert_loader_instances_to_planner_propositions(const std::vector<Proposition_Instance>& proposition_instances, const std::unordered_map<size_t, Atom_Id>& converter) const {
-		std::vector<Proposition> propositions;
-		propositions.reserve(proposition_instances.size());
-		for (const auto& proposition_instance : proposition_instances) {
-			auto converted_instance = Proposition_Instance(proposition_instance, converter);
-			auto& proposition = domain.get_proposition(converted_instance);
-			propositions.push_back(proposition);
-		}
-		return propositions;
 	}
 }

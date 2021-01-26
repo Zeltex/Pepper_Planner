@@ -1,14 +1,6 @@
 #include "DEL_Interface.hpp"
 
 namespace del {
-
-	DEL_Interface::DEL_Interface(size_t domain_to_load) : domain(), planner(), has_policy(false), policy(false), action_library(), pepper_id({ 0 }) {
-		Environment_Loader environment_loader;
-		auto [domain, action_library, goal] = environment_loader.load(domain_to_load);
-		this->domain = domain;
-		this->action_library = std::move(action_library);
-		this->goal = std::move(goal);
-	}
 	
 	DEL_Interface::DEL_Interface(State initial_state, Action_Library library) : 
 			domain(initial_state), has_policy(false), policy(false), action_library(), pepper_id({ 0 }) {
@@ -54,54 +46,6 @@ namespace del {
 	bool DEL_Interface::query(const Formula& query) {
 		return domain.get_current_state().valuate(query, domain);
 	}
-	
-	//void DEL_Interface::perform_do(const Agent_Id i, const std::vector<Proposition_Instance>& add, const std::vector<Proposition_Instance>& del) {
-	//	domain.perform_do(i, add, del);
-	//}
-
-	//void DEL_Interface::perform_oc(const Agent_Id i, std::vector<std::vector<std::string>>&& add, std::vector<std::vector<std::string>>&& del) {
-	//	std::vector<Proposition_Instance> add_list;
-	//	add_list.reserve(add.size());
-	//	for (auto& entry : add) {
-	//		if (entry.size() < 1) continue;
-	//		std::vector<Atom_Id> temp_atoms;
-	//		bool first = true;
-
-	//		for (auto& atom : entry) {
-	//			if (first) {
-	//				first = false;
-	//			} else {
-	//				temp_atoms.emplace_back(domain.get_atom_id(atom));
-	//			}
-	//		}
-
-	//		add_list.emplace_back(entry[0], temp_atoms);
-	//	}
-
-	//	std::vector<Proposition_Instance> del_list;
-	//	del_list.reserve(del.size());
-	//	for (auto& entry : del) {
-	//		if (entry.size() < 1) continue;
-	//		std::vector<Atom_Id> temp_atoms;
-	//		bool first = true;
-
-	//		for (auto& atom : entry) {
-	//			if (first) {
-	//				first = false;
-	//			} else {
-	//				temp_atoms.emplace_back(domain.get_atom_id(atom));
-	//			}
-	//		}
-	//		del_list.emplace_back(entry[0], temp_atoms);
-	//	}
-
-	//	domain.perform_oc(i, std::move(add_list), std::move(del_list));
-	//}
-
-	//void DEL_Interface::perform_oc(const std::string owner_name, std::vector<std::vector<std::string>>&& add, std::vector<std::vector<std::string>>&& del) {
-
-	//	return perform_oc(domain.get_agent(owner_name).get_id(), std::move(add), std::move(del));
-	//}
 	
 	void DEL_Interface::perform_action(Action action) {
 		domain.perform_action(action);

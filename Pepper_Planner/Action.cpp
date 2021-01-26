@@ -2,6 +2,7 @@
 #include "World.hpp"
 #include "Domain.hpp"
 #include "Formula_Input_Impl.hpp"
+#include "Propositions.hpp"
 
 namespace del {
 
@@ -13,7 +14,6 @@ namespace del {
 	Action::Action(const General_Action& general_action, const Domain& domain, const std::vector<Atom_Id>& arguments)
 			:args(arguments), cost(general_action.get_cost()), name(general_action.get_name()), events(), designated_events() {
 
-		//relations(general_action.get_relations())
 		copy_and_instantiate_relations(general_action, domain, arguments);
 
 		auto& owner_atom = arguments.at(general_action.get_owner().second.id);
@@ -21,7 +21,6 @@ namespace del {
 
 		auto event_name_to_id = copy_and_instantiate_events(general_action, arguments, domain);
 		copy_and_instantiate_designated_events(general_action, event_name_to_id);
-		//copy_and_instantiate_edge_conditions(general_action, event_name_to_id, arguments, domain);
 	}
 
 	void Action::copy_and_instantiate_relations(const General_Action& general_action, const Domain& domain, const std::vector<Atom_Id>& arguments) {
@@ -73,54 +72,6 @@ namespace del {
 
 	}
 
-
-
-	//void Action::copy_and_instantiate_edge_conditions(
-	//			const General_Action& general_action, 
-	//			const std::unordered_map<std::string, Event_Id>& event_name_to_id,
-	//			const std::vector<Atom_Id>& arguments,
-	//			const Domain& domain) {
-	//	auto condition_owner_to_agent = general_action.get_condition_owner_to_agent(domain, arguments);
-	//	std::unordered_map<size_t, Atom_Id> converted_arguments;
-	//	for (size_t i = 0; i < arguments.size(); ++i) {
-	//		converted_arguments[i] = arguments[i];
-	//	}
-	//		
-	//	size_t agents_size = 0;
-	//	edge_conditions = std::vector<Agent_Edges>();
-	//	for (auto& entry : condition_owner_to_agent) {
-	//		agents_size += entry.second.size();
-	//	}
-	//	edge_conditions.reserve(agents_size);
-	//	for (auto& entry : condition_owner_to_agent) {
-	//		for (auto& entry2 : entry.second) {
-	//			edge_conditions.emplace_back(agents_size);
-	//		}
-	//	}
-	//	// TODO - Assumes all agents are present in edge definition (meaning _rest pretty much has to be defined)
-
-	//	for (auto& agent_edges : general_action.get_edge_conditions()) {
-	//		for (auto& agent : condition_owner_to_agent.at(agent_edges.first)) { // Needed for edge conditions for _rest/(REST_KEYWORD)
-
-	//			if (agent_edges.first == REST_INDEX) {
-	//				converted_arguments[REST_INDEX] = { agent.get_atom_id().id }; // TODO - Janky conversion, need a better way to handle agents
-
-	//				for (auto& edge_condition : agent_edges.second) {
-	//					auto converter = general_action.create_converter(domain, converted_arguments);
-	//					Formula condition = Formula(edge_condition.condition, converter);
-	//					edge_conditions.at(agent.get_id().id).insert(event_name_to_id.at(edge_condition.event_from), event_name_to_id.at(edge_condition.event_to), std::move(condition));
-	//				}
-	//			} else {
-	//				for (auto& edge_condition : agent_edges.second) {
-	//					auto converter = general_action.create_converter(domain, arguments);
-	//					Formula condition = Formula(edge_condition.condition, converter);
-	//					edge_conditions.at(agent.get_id().id).insert(event_name_to_id.at(edge_condition.event_from), event_name_to_id.at(edge_condition.event_to), std::move(condition));
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
 	void Action::copy_and_instantiate_designated_events(const General_Action& general_action, const std::unordered_map<std::string, Event_Id>& event_name_to_id) {
 		for (auto& entry : general_action.get_designated_events()) {
 			this->designated_events.push_back(event_name_to_id.at(entry));
@@ -131,14 +82,9 @@ namespace del {
 		std::unordered_map<std::string, Event_Id> event_name_to_id;
 		auto converter = general_action.create_converter(domain, arguments);
 		for (auto& event : general_action.get_events()) {
-			std::vector<Proposition> add_list;
-			std::vector<Proposition> delete_list;
-			for (auto& entry : event.get_add_list()) {
-				add_list.push_back(converter.at(entry));
-			}
-			for (auto& entry : event.get_delete_list()) {
-				delete_list.push_back(converter.at(entry));
-			}
+			Propositions add_list(event.get_add_list(), converter);
+			Propositions delete_list(event.get_delete_list(), converter);
+
 			Formula preconditions = Formula(event.get_preconditions(), converter);
 			auto id = Event_Id{ events.size() };
 			event_name_to_id.emplace(event.get_name(), id);
@@ -150,15 +96,15 @@ namespace del {
 
 	void Action::add_event(const Action_Event& event) {
 		events.push_back(event);
+		relations.set_amount_of_events(events.size());
 	}
 
-	void Action::add_event(const std::string& name, Event_Id id, Formula&& precondition, std::vector<Proposition>&& proposition_add, std::vector<Proposition>&& proposition_delete) {
+	void Action::add_event(const std::string& name, Event_Id id, Formula&& precondition, Propositions&& proposition_add, Propositions&& proposition_delete) {
 		events.emplace_back(name, id, std::move(precondition), proposition_add, proposition_delete);
 	}
 
 	void Action::add_reachability(Agent_Id owner, Event_Id event_from, Event_Id event_to) {
 		relations.add_relation(owner, event_from, event_to);
-		//edge_conditions.at(owner.id).insert(event_from, event_to, std::move(condition));
 	}
 
 	const std::vector<Action_Event>& Action::get_events() const {
@@ -229,8 +175,8 @@ namespace del {
 		for (auto& event : events) {
 			result += base_id + std::to_string(event.get_id().id) + "[label=\"" + event.get_name() + "\n<"
 				+ event.get_preconditions().to_string(domain.get_id_to_atom()) + ">\n<"
-				+ get_string(event.get_add_list(), domain) + ">\n<"
-				+ get_string(event.get_delete_list(), domain) + ">\"";
+				+ event.get_add_list().to_string(domain) + ">\n<"
+				+ event.get_delete_list().to_string(domain) + ">\"";
 			if (find(designated_events.begin(), designated_events.end(), event.get_id()) != designated_events.end()) {
 				result += ", shape=doublecircle";
 			}
@@ -243,20 +189,6 @@ namespace del {
 		//	agent++;
 		//}
 		result += relations.to_graph();
-		return result;
-	}
-
-	std::string Action::get_string(const std::vector<Proposition>& propositions, const Domain& domain) const {
-		std::string result;
-		bool first = true;
-		for (auto& proposition : propositions) {
-			if (first) {
-				first = false;
-			} else {
-				result += "; ";
-			}
-			result += domain.get_proposition_instance(proposition).to_string(domain.get_id_to_atom());
-		}
 		return result;
 	}
 

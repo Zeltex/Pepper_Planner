@@ -7,7 +7,6 @@
 #include "Domain_Interface.hpp"
 #include "Loader_Types.hpp"
 #include "General_Action.hpp"
-#include "General_World.hpp"
 #include "Domain.hpp"
 #include "Action_Library.hpp"
 
@@ -16,7 +15,9 @@ namespace del {
 	class Domain_Interface_Implementation : public Domain_Interface {
 	public:
 		Domain_Interface_Implementation(): 
-			actions(), current_action(), initial_state(), library(), domain(), general_propositions(), world_name_to_id(), action_reflexivity(false){}
+			actions(), current_action(), initial_state(), library(), domain(), general_propositions(), world_name_to_id(), action_reflexivity(false){
+			__debugbreak;
+		}
 		virtual void new_action(std::string name) override;
 		virtual void new_domain(std::string name) override;
 		virtual void finish_action(std::map<Proposition_Instance, Proposition> instance_to_proposition) override;

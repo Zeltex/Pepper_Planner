@@ -10,20 +10,8 @@ namespace del {
 		nodes.reserve(node_size); 
 		auto root = create_root_node(state);
 		history.insert(nodes.at(root.id));
-//		auto local = std::move(perform_perspective_shift(state, planning_agent));
-//#if BISIM_CONTRACTION_ENABLED == 1
-//		local = std::move(perform_k_bisimilar_contraction(local, BISIMILAR_DEPTH));
-//#endif
-//		local.remove_unreachable_worlds();
-//		for (auto& global : split_into_global_states(local, planning_agent)) {
-//
-//			auto node = create_or_node(std::move(global), root);
-//			history.insert(nodes.at(node.id));
-//			add_to_frontier(node);
-//		}
 
 		for (auto& global : split_into_global_states(state, planning_agent)) {
-
 			auto node = create_or_node(std::move(global), root);
 			history.insert(nodes.at(node.id));
 			add_to_frontier(node);
@@ -104,11 +92,8 @@ namespace del {
 
 	std::string Graph::to_string(const Domain& domain) const {
 		std::string result = "Graph: (root, " + std::to_string(root.id) + ") (frontier";
-		//for (auto node_id : frontier) {
-		//	result += ", " + std::to_string(node_id);
-		//}
 		result += ")";
-		for (auto node : nodes) {
+		for (const auto& node : nodes) {
 			result += "\n\n\n" + node.to_string(domain);
 		}
 		return result;
@@ -145,19 +130,6 @@ namespace del {
 	std::string Graph::to_graph_simple(const Domain& domain) const {
 		std::string result = "digraph G {\ncompound=true;";
 		std::string connections;
-
-		//size_t counter = 0;
-		//for (auto& node : nodes) {
-		//	if (!node.is_solved()) continue;
-		//	result += "\n n" + std::to_string(node.get_id().id) + " [label=" + std::to_string(node.get_id().id) + "];";
-
-		//	for (auto& child : node.get_children()) {
-		//		if (!nodes[child.id].is_solved()) continue;
-		//		connections += "\n n" + std::to_string(node.get_id().id) + " -> n" + std::to_string(child.id) + ";";
-		//	}
-		//}
-		//result += connections + "\n}";
-
 		size_t counter = 0;
 
 		std::deque<size_t> frontier;
